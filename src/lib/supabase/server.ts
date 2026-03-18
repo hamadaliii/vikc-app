@@ -1,13 +1,9 @@
-// ============================================================
-// Supabase Client — Server (API Routes / Server Components)
-// ============================================================
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-// For Server Components and API Routes (reads/respects cookies)
-export function createServerSupabaseClient() {
-  const cookieStore = cookies()
+export async function createServerSupabaseClient() {
+  const cookieStore = await cookies()
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -25,7 +21,6 @@ export function createServerSupabaseClient() {
   )
 }
 
-// Service role client — bypasses RLS, ONLY for server-side trusted operations
 export function createServiceRoleClient() {
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
