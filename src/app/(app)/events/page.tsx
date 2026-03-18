@@ -81,7 +81,7 @@ export default function EventsPage() {
         {(['all', ...Object.keys(EVENT_TYPES)]).map(f => (
           <button key={f} onClick={() => setFilter(f)} style={{
             flexShrink: 0, padding: '7px 14px', borderRadius: 50,
-            border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600,
+            ursor: 'pointer', fontSize: 12, fontWeight: 600,
             background: filter === f ? 'var(--accent)' : 'var(--card)',
             color: filter === f ? '#fff' : 'var(--text2)',
             border: filter === f ? 'none' : '1px solid var(--border)',
