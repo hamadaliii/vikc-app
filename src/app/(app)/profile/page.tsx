@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 let _sb: any = null
 function getSupabase() {
-  if (!_sb) _sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } })
+  if (!_sb) _sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }})
   return _sb
 }
 
@@ -19,7 +19,7 @@ export default function ProfilePage() {
   const [attendance, setAttendance] = useState<any[]>([])
   const [transactions, setTransactions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<'history'|'badges'|'points'>('history')
+  const [tab, setTab] = useState<'history'|'badges'|'points'|null>(null)
 
   useEffect(() => {
     const supabase = getSupabase()

@@ -8,7 +8,7 @@ function getSupabase() {
   if (!_sb) _sb = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } }
+    {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }}
   )
   return _sb
 }
@@ -29,6 +29,7 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 
 export default function EventsPage() {
+  const [showPast, setShowPast] = useState(false)
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
@@ -115,14 +116,15 @@ export default function EventsPage() {
           )}
           {past.length > 0 && (
             <>
-              <div style={{ padding: '0 20px 10px' }}>
+              <div onClick={() => setShowPast(p => !p)} style={{ padding: '0 20px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
                 <span style={{ fontFamily: 'var(--font-syne)', fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>
-                  Past Events
+                  Past Events ({past.length})
                 </span>
+                <span style={{ color: 'var(--text3)', fontSize: 18 }}>{showPast ? '▲' : '▼'}</span>
               </div>
-              <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
+              {showPast && <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
                 {past.map(e => <EventCardSmall key={e.id} event={e} />)}
-              </div>
+              </div>}
             </>
           )}
         </>

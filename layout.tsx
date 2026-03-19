@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body suppressHydrationWarning style={{margin:0,padding:0}}>
   <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('vikc-theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}` }} />
-  <div id="app-shell" style={{width:'100%',height:'100dvh',overflow:'hidden',display:'flex',flexDirection:'column',background:'var(--bg)'}}>
+  <div id="app-shell" style={{width:'100%', height:'100dvh', overflow:'hidden', display:'flex', flexDirection:'column', background:'var(--bg)'}}>
     {children}
   </div>
 </body>

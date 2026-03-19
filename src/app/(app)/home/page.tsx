@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 let _sb: any = null
 function getSupabase() {
-  if (!_sb) _sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } })
+  if (!_sb) _sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }})
   return _sb
 }
 
@@ -61,7 +61,7 @@ export default function HomePage() {
       {/* Header */}
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'20px 20px 12px'}}>
         <div>
-          <div style={{fontSize:13,color:'var(--text2)'}}>Good day 👋</div>
+          <div style={{fontSize:13,color:'var(--text2)'}}> Alsalam Alykom 👋</div>
           <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:22,fontWeight:800}}>{profile.full_name?.split(' ')[0]||profile.username}</div>
         </div>
         <div style={{display:'flex',gap:10,alignItems:'center'}}>
@@ -86,14 +86,14 @@ export default function HomePage() {
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
             <div>
               <div style={{fontSize:12,color:'var(--text2)',marginBottom:4}}>Level {profile.level||1} · {getLevelName(profile.level||1)}</div>
-              <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:30,fontWeight:800,color:'var(--gold2)'}}>{(profile.points||0).toLocaleString()} <span style={{fontSize:14,color:'var(--text2)',fontWeight:400}}>pts</span></div>
+              <div style={{fontSize:30,fontWeight:800,color:'var(--gold2)'}}>{(profile.points||0).toLocaleString()} <span style={{fontSize:14,color:'var(--text2)',fontWeight:400}}>pts</span></div>
             </div>
             <div style={{position:'relative',width:68,height:68,display:'flex',alignItems:'center',justifyContent:'center'}}>
               <svg width="68" height="68" viewBox="0 0 68 68" style={{transform:'rotate(-90deg)'}}>
                 <circle cx="34" cy="34" r={r} fill="none" stroke="var(--border)" strokeWidth="5"/>
                 <circle cx="34" cy="34" r={r} fill="none" stroke="var(--gold2)" strokeWidth="5" strokeDasharray={`${circ*(xpPct/100)} ${circ}`} strokeLinecap="round"/>
               </svg>
-              <span style={{position:'absolute',fontFamily:'var(--font-syne,sans-serif)',fontWeight:800,fontSize:18,color:'var(--gold3)'}}>{profile.level||1}</span>
+              <span style={{position:'absolute', fontWeight:800,fontSize:18,color:'var(--gold3)'}}>{profile.level||1}</span>
             </div>
           </div>
           <div style={{fontSize:12,color:'var(--text2)',display:'flex',justifyContent:'space-between',marginBottom:6}}>
@@ -109,12 +109,12 @@ export default function HomePage() {
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,padding:'0 20px',marginBottom:16}}>
         <Link href="/attendance" style={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:16,padding:16,textDecoration:'none',color:'var(--text)',boxShadow:'0 2px 8px var(--shadow)'}}>
           <div style={{fontSize:20,marginBottom:6}}>📅</div>
-          <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:24,fontWeight:800}}>{profile.events_attended||0}</div>
+          <div style={{fontSize:24,fontWeight:800}}>{profile.events_attended||0}</div>
           <div style={{fontSize:12,color:'var(--text2)',marginTop:2}}>Events Attended</div>
         </Link>
         <Link href="/community" style={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:16,padding:16,textDecoration:'none',color:'var(--text)',boxShadow:'0 2px 8px var(--shadow)'}}>
           <div style={{fontSize:20,marginBottom:6}}>🔥</div>
-          <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:24,fontWeight:800}}>{profile.streak_current||0}</div>
+          <div style={{ fontSize:24,fontWeight:800}}>{profile.streak_current||0}</div>
           <div style={{fontSize:12,color:'var(--text2)',marginTop:2}}>Day Streak</div>
         </Link>
       </div>
@@ -124,7 +124,7 @@ export default function HomePage() {
         <div style={{borderRadius:16,padding:16,display:'flex',alignItems:'center',gap:16,background:'linear-gradient(135deg,rgba(255,124,58,0.12),rgba(200,165,60,0.06))',border:'1px solid rgba(255,124,58,0.25)'}}>
           <span style={{fontSize:36}}>🔥</span>
           <div style={{flex:1}}>
-            <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:20,fontWeight:800,color:'var(--orange)'}}>{profile.streak_current||0} Day Streak</div>
+            <div style={{fontSize:20,fontWeight:800,color:'var(--orange)'}}>{profile.streak_current||0} Day Streak</div>
             <div style={{fontSize:12,color:'var(--text2)',marginTop:2}}>Best: {profile.streak_max||0} days</div>
             <div style={{display:'flex',gap:4,marginTop:8}}>
               {[...Array(7)].map((_,i)=>(
@@ -137,7 +137,7 @@ export default function HomePage() {
 
       {/* Upcoming events */}
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 20px',marginBottom:12}}>
-        <span style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:17,fontWeight:700}}>Upcoming Events</span>
+        <span style={{fontSize:17,fontWeight:700}}>Upcoming Events</span>
         <Link href="/events" style={{fontSize:13,color:'var(--gold2)',textDecoration:'none',fontWeight:600}}>See all →</Link>
       </div>
       <div style={{padding:'0 20px',display:'flex',flexDirection:'column',gap:10,marginBottom:24}}>
@@ -151,7 +151,7 @@ export default function HomePage() {
             <Link key={e.id} href={`/events/${e.id}`} style={{display:'flex',alignItems:'center',gap:12,background:'var(--card)',border:'1px solid var(--border)',borderRadius:16,padding:12,textDecoration:'none',color:'var(--text)',boxShadow:'0 2px 8px var(--shadow)',transition:'transform 0.15s'}}>
               <div style={{width:48,height:48,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,flexShrink:0,background:EV_COLOR[e.type]||'#0e1040'}}>{EV_EMOJI[e.type]||'📅'}</div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontFamily:'var(--font-syne,sans-serif)',fontWeight:700,fontSize:14,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.title}</div>
+                <div style={{fontWeight:700,fontSize:14,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.title}</div>
                 <div style={{fontSize:12,color:'var(--text2)',marginTop:2}}>{MONTHS[d.getMonth()]} {d.getDate()} · {e.start_time?.slice(0,5)} · <span style={{color:'var(--gold2)'}}>+{e.points_reward}pts</span></div>
               </div>
               <div style={{padding:'5px 12px',borderRadius:50,fontSize:11,fontWeight:600,flexShrink:0,background:e.is_registered?'rgba(34,212,122,0.15)':'linear-gradient(135deg,rgba(200,165,60,0.2),rgba(232,197,106,0.15))',color:e.is_registered?'var(--green)':'var(--gold2)',border:`1px solid ${e.is_registered?'rgba(34,212,122,0.3)':'rgba(200,165,60,0.3)'}`}}>

@@ -1,6 +1,16 @@
 'use client'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } }
+  )
+}
 
 const TABS = [
   { href: '/home',      icon: '🏠', label: 'Home' },
@@ -10,12 +20,42 @@ const TABS = [
   { href: '/profile',   icon: '👤', label: 'Profile' },
 ]
 
+function AdminButton() {
+  const [isAdmin, setIsAdmin] = useState(false)
+  useEffect(() => {
+    const check = async () => {
+      const sb = getSupabase()
+      const token = localStorage.getItem('sb-token')
+      const refresh = localStorage.getItem('sb-refresh')
+      if (token && refresh) await sb.auth.setSession({ access_token: token, refresh_token: refresh })
+      const { data: { user } } = await sb.auth.getUser()
+      if (!user) return
+      const { data } = await sb.from('profiles').select('role').eq('id', user.id).single()
+      if (data && ['admin','superadmin','staff'].includes(data.role)) setIsAdmin(true)
+    }
+    check()
+  }, [])
+  if (!isAdmin) return null
+  return (
+    <Link href="/admin" style={{
+      position: 'fixed', top: 16, right: 16, zIndex: 1000,
+      padding: '7px 14px', borderRadius: 50,
+      background: 'linear-gradient(135deg, var(--gold), var(--orange))',
+      color: '#fff', fontWeight: 700, fontSize: 12,
+      textDecoration: 'none', boxShadow: '0 4px 16px rgba(245,166,35,0.35)',
+    }}>
+      ⚙️ Admin
+    </Link>
+  )
+}
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const hideTabBar = pathname.includes('/checkin') || pathname.includes('/live-event') || pathname.includes('/settings') || pathname.includes('/notifications')
 
   return (
     <>
+      <AdminButton />
       <main style={{flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>{children}</main>
       {!hideTabBar && (
         <nav className="tab-bar" style={{background:'var(--bg2)',borderTop:'1px solid var(--border)',display:'flex',alignItems:'stretch',flexShrink:0,height:68}}>

@@ -8,7 +8,7 @@ function getSupabase() {
   if (!_sb) _sb = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } }
+    {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }}
   )
   return _sb
 }
@@ -183,8 +183,8 @@ export default function NotificationsPage() {
                 key={n.id}
                 onClick={() => openNotif(n)}
                 style={{
-                  background: n.is_read ? 'var(--card)' : 'rgba(108,99,255,0.07)',
-                  border: `1px solid ${n.is_read ? 'var(--border)' : 'rgba(108,99,255,0.3)'}`,
+                  background: n.is_read ? 'var(--card)' : 'var(--card)',
+                  border: `1px solid ${n.is_read ? 'var(--border)' : 'var(--accent)'}`,
                   borderRadius: 16, padding: '14px 16px', cursor: 'pointer', transition: 'all 0.15s',
                 }}
               >

@@ -244,3 +244,8 @@ input:focus, select:focus, textarea:focus {
 [data-theme="light"] textarea:focus {
   box-shadow: 0 0 0 3px rgba(90,82,232,0.12);
 }
+
+[data-theme="light"] .notif-unread {
+  background: rgba(180, 130, 0, 0.08) !important;
+  border-color: var(--gold) !important;
+}

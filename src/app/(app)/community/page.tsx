@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 
 let _sb: any = null
 function getSupabase() {
-  if (!_sb) _sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } })
+  if (!_sb) _sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }})
   return _sb
 }
 
@@ -21,7 +21,7 @@ export default function CommunityPage() {
       if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
-      const { data } = await supabase.from('profiles').select('*').order('points', { ascending: false }).limit(20)
+      const { data } = await supabase.from('profiles').select('*').order('xp', { ascending: false }).limit(20)
       if (data) { setUsers(data); setMe(data.find((u: any) => u.id === user.id)) }
       setLoading(false)
     }

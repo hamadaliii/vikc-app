@@ -84,6 +84,7 @@ html, body {
 }
 
 body {
+  font-family: var(--font-dm-sans), -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
   transition: background 0.25s, color 0.25s;
@@ -328,4 +329,45 @@ input:focus, select:focus, textarea:focus {
 }
 [data-theme="light"] #app-shell-wrapper {
   background: #d8d0be !important;
+}
+
+* {
+  font-family: -apple-system, "Apple Color Emoji", var(--font-dm-sans), sans-serif;
+}
+.font-syne, h1, h2, h3 {
+  font-family: var(--font-syne), -apple-system, "Apple Color Emoji", sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; }
+}
+[data-theme="light"] { color-scheme: light; }
+[data-theme="dark"]  { color-scheme: dark; }
+
+[data-theme="light"] .ev-lecture,
+[data-theme="light"] .ev-circle,
+[data-theme="light"] .ev-workshop,
+[data-theme="light"] .ev-sports,
+[data-theme="light"] .ev-volunteer,
+[data-theme="light"] .ev-ramadan,
+[data-theme="light"] .ev-camp,
+[data-theme="light"] .ev-competition {
+  background: linear-gradient(135deg, #c8960a, #e8b020) !important;
+}
+
+[data-theme="light"] .chip-accent,
+[data-theme="light"] .sidebar-item.active {
+  background: rgba(180, 130, 0, 0.12) !important;
+  color: var(--gold3) !important;
+}
+
+[data-theme="light"] .ev-lecture,
+[data-theme="light"] .ev-circle,
+[data-theme="light"] .ev-workshop,
+[data-theme="light"] .ev-sports,
+[data-theme="light"] .ev-volunteer,
+[data-theme="light"] .ev-ramadan,
+[data-theme="light"] .ev-camp,
+[data-theme="light"] .ev-competition {
+  background: linear-gradient(135deg, #b8860b, #d4a017) !important;
 }
