@@ -418,3 +418,8 @@ body {
   padding-bottom: env(safe-area-inset-bottom) !important;
   height: calc(68px + env(safe-area-inset-bottom)) !important;
 }
+
+#app-shell {
+  padding-top: env(safe-area-inset-top) !important;
+  padding-bottom: env(safe-area-inset-bottom) !important;
+}
