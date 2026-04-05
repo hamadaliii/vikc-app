@@ -46,7 +46,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
+	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>VIKC needs your location to verify on-site attendance during check-in.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

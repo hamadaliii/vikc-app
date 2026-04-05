@@ -36,6 +36,11 @@ export default function LoginPage() {
       localStorage.setItem('sb-refresh', data.session.refresh_token)
       localStorage.setItem('sb-user', JSON.stringify(data.user))
     }
+      try {
+        const { Preferences } = await import('@capacitor/preferences')
+        await Preferences.set({ key: 'sb-token', value: data.session.access_token })
+        await Preferences.set({ key: 'sb-refresh', value: data.session.refresh_token })
+      } catch {}
 
     window.location.href = '/home'
   }

@@ -56,16 +56,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false)
   const hideTabBar = pathname.includes('/checkin') || pathname.includes('/live-event')
 
-  useEffect(() => {
-    const check = async () => {
-      const sb = getSupabase()
-      const { data: { user } } = await sb.auth.getUser()
-      if (!user) return
-      const { data } = await sb.from('profiles').select('role').eq('id', user.id).single()
-      if (data && ['admin','superadmin','staff'].includes(data.role)) setIsAdmin(true)
+useEffect(() => {
+  const restore = async () => {
+    try {
+      const { Preferences } = await import('@capacitor/preferences')
+      const { value: token } = await Preferences.get({ key: 'sb-token' })
+      const { value: refresh } = await Preferences.get({ key: 'sb-refresh' })
+      if (token && refresh) {
+        const sb = getSupabase()
+        await sb.auth.setSession({ access_token: token, refresh_token: refresh })
+      }
+    } catch {
+      const token = localStorage.getItem('sb-token')
+      const refresh = localStorage.getItem('sb-refresh')
+      if (token && refresh) {
+        const sb = getSupabase()
+        await sb.auth.setSession({ access_token: token, refresh_token: refresh })
+      }
     }
-    check()
-  }, [])
+  }
+  restore()
+}, [])
 
   const tabs = [
     { href: '/home',      icon: '🏠', label: 'Home' },
