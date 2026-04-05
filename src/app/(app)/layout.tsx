@@ -23,18 +23,20 @@ const TABS = [
 function AdminButton() {
   const [isAdmin, setIsAdmin] = useState(false)
   useEffect(() => {
-    const check = async () => {
-      const sb = getSupabase()
-      const token = localStorage.getItem('sb-token')
-      const refresh = localStorage.getItem('sb-refresh')
-      if (token && refresh) await sb.auth.setSession({ access_token: token, refresh_token: refresh })
-      const { data: { user } } = await sb.auth.getUser()
-      if (!user) return
-      const { data } = await sb.from('profiles').select('role').eq('id', user.id).single()
-      if (data && ['admin','superadmin','staff'].includes(data.role)) setIsAdmin(true)
+  const restoreSession = async () => {
+    const sb = getSupabase()
+    const token = localStorage.getItem('sb-token')
+    const refresh = localStorage.getItem('sb-refresh')
+    if (token && refresh) {
+      await sb.auth.setSession({ access_token: token, refresh_token: refresh })
     }
-    check()
-  }, [])
+    const { data: { user } } = await sb.auth.getUser()
+    if (!user) return
+    const { data } = await sb.from('profiles').select('role').eq('id', user.id).single()
+    if (data && ['admin','superadmin','staff'].includes(data.role)) setIsAdmin(true)
+  }
+  restoreSession()
+}, [])
   if (!isAdmin) return null
   return (
     <Link href="/admin" style={{

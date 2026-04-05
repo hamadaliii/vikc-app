@@ -225,14 +225,14 @@ input:focus, select:focus, textarea:focus {
 .chip-muted   { background: rgba(128,128,160,0.12); color: var(--text3); }
 
 /* Buttons */
-[data-theme="light"] .ev-lecture     { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
-[data-theme="light"] .ev-workshop    { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
-[data-theme="light"] .ev-circle      { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
-[data-theme="light"] .ev-sports      { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
-[data-theme="light"] .ev-volunteer   { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
-[data-theme="light"] .ev-ramadan     { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
-[data-theme="light"] .ev-camp        { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
-[data-theme="light"] .ev-competition { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-lecture     { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-workshop    { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-circle      { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-sports      { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-volunteer   { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-ramadan     { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-camp        { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
+:root[data-theme="light"] .ev-competition { background: linear-gradient(135deg, #c8960a, #e8b020) !important; }
 .btn-primary {
   width: 100%;
   padding: 14px;
