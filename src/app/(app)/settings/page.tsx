@@ -26,9 +26,17 @@ export default function SettingsPage() {
     document.documentElement.setAttribute('data-theme', saved)
     const supabase = getSupabase()
     const load = async () => {
-      const token = localStorage.getItem('sb-token')
-      const refresh = localStorage.getItem('sb-refresh')
-      if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
+    const supabase = getSupabase()
+    let token = localStorage.getItem('sb-token')
+    let refresh = localStorage.getItem('sb-refresh')
+    try {
+      const { Preferences } = await import('@capacitor/preferences')
+      const { value: t } = await Preferences.get({ key: 'sb-token' })
+      const { value: r } = await Preferences.get({ key: 'sb-refresh' })
+      if (t) token = t
+      if (r) refresh = r
+    } catch {}
+    if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
       const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single()
