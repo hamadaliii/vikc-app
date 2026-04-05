@@ -4,7 +4,7 @@ import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supab
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createServerSupabaseClient()
+    const supabase = await createServerSupabaseClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return NextResponse.json({ success: false, message: 'Not authenticated' }, { status: 401 })
 

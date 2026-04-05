@@ -10,7 +10,7 @@ import type { CheckinRequest, CheckinResponse } from '@/types'
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createServerSupabaseClient()
+    const supabase = await createServerSupabaseClient()
 
     // 1. Authenticate user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
