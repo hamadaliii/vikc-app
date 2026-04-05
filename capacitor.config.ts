@@ -10,12 +10,12 @@ const config: CapacitorConfig = {
     allowNavigation: ['vikc-app-9r97.vercel.app']
   },
   ios: {
+    backgroundColor: '#f8f4ed',
     contentInset: 'automatic',
     preferredContentMode: 'mobile',
     limitsNavigationsToAppBoundDomains: true,
     allowsLinkPreview: false,
     scrollEnabled: true,
-    backgroundColor: '#0d0d1a',
   }
 };
 

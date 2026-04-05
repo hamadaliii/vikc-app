@@ -21,7 +21,7 @@ export default function CommunityPage() {
       if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
-      const { data } = await supabase.from('profiles').select('*').order('xp', { ascending: false }).limit(20)
+      const { data } = await supabase.from('profiles').select('*').order('points', { ascending: false }).limit(20)
       if (data) { setUsers(data); setMe(data.find((u: any) => u.id === user.id)) }
       setLoading(false)
     }

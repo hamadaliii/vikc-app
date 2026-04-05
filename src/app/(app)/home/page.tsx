@@ -65,11 +65,6 @@ export default function HomePage() {
           <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:22,fontWeight:800}}>{profile.full_name?.split(' ')[0]||profile.username}</div>
         </div>
         <div style={{display:'flex',gap:10,alignItems:'center'}}>
-          {isAdmin && (
-            <Link href="/admin" style={{padding:'6px 14px',borderRadius:50,background:'linear-gradient(135deg,var(--gold),var(--gold2))',color:'#1a1400',fontSize:12,fontWeight:700,textDecoration:'none',boxShadow:'0 2px 12px rgba(200,165,60,0.3)'}}>
-              Admin ⚙️
-            </Link>
-          )}
           <Link href="/notifications" style={{position:'relative',width:40,height:40,background:'var(--card)',border:'1px solid var(--border)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,textDecoration:'none',color:'var(--text)'}}>
             🔔
             {unread>0&&<span style={{position:'absolute',top:-2,right:-2,width:16,height:16,background:'var(--red)',borderRadius:'50%',fontSize:9,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',border:'2px solid var(--bg)'}}>{unread}</span>}
@@ -134,33 +129,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
-      {/* Upcoming events */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 20px',marginBottom:12}}>
-        <span style={{fontSize:17,fontWeight:700}}>Upcoming Events</span>
-        <Link href="/events" style={{fontSize:13,color:'var(--gold2)',textDecoration:'none',fontWeight:600}}>See all →</Link>
       </div>
-      <div style={{padding:'0 20px',display:'flex',flexDirection:'column',gap:10,marginBottom:24}}>
-        {events.length===0?(
-          <div style={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:16,padding:20,textAlign:'center',color:'var(--text2)',fontSize:14}}>
-            No upcoming events. <Link href="/events" style={{color:'var(--gold2)',textDecoration:'none'}}>Browse →</Link>
-          </div>
-        ):events.map(e=>{
-          const d=new Date(e.date)
-          return (
-            <Link key={e.id} href={`/events/${e.id}`} style={{display:'flex',alignItems:'center',gap:12,background:'var(--card)',border:'1px solid var(--border)',borderRadius:16,padding:12,textDecoration:'none',color:'var(--text)',boxShadow:'0 2px 8px var(--shadow)',transition:'transform 0.15s'}}>
-              <div style={{width:48,height:48,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,flexShrink:0,background:EV_COLOR[e.type]||'#0e1040'}}>{EV_EMOJI[e.type]||'📅'}</div>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontWeight:700,fontSize:14,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.title}</div>
-                <div style={{fontSize:12,color:'var(--text2)',marginTop:2}}>{MONTHS[d.getMonth()]} {d.getDate()} · {e.start_time?.slice(0,5)} · <span style={{color:'var(--gold2)'}}>+{e.points_reward}pts</span></div>
-              </div>
-              <div style={{padding:'5px 12px',borderRadius:50,fontSize:11,fontWeight:600,flexShrink:0,background:e.is_registered?'rgba(34,212,122,0.15)':'linear-gradient(135deg,rgba(200,165,60,0.2),rgba(232,197,106,0.15))',color:e.is_registered?'var(--green)':'var(--gold2)',border:`1px solid ${e.is_registered?'rgba(34,212,122,0.3)':'rgba(200,165,60,0.3)'}`}}>
-                {e.is_registered?'✓ Joined':'Join'}
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
   )
 }

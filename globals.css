@@ -71,6 +71,11 @@
   --text:  #1a1428;
   --text2: #60587a;
   --text3: #9890a8;
+
+  --card: #ffffff;
+  --bg: #f8f4ed;
+  --bg2: #ede8df;
+  --border: rgba(0,0,0,0.08);
 }
 
 * {
@@ -370,4 +375,22 @@ input:focus, select:focus, textarea:focus {
 [data-theme="light"] .ev-camp,
 [data-theme="light"] .ev-competition {
   background: linear-gradient(135deg, #b8860b, #d4a017) !important;
+}
+
+[data-theme="light"] .ev-lecture,
+[data-theme="light"] .ev-circle,
+[data-theme="light"] .ev-workshop,
+[data-theme="light"] .ev-sports,
+[data-theme="light"] .ev-volunteer,
+[data-theme="light"] .ev-ramadan,
+[data-theme="light"] .ev-camp,
+[data-theme="light"] .ev-competition {
+  background: linear-gradient(135deg, #c8960a, #e8b020) !important;
+}
+
+[data-theme="light"] [style*="background:'#1a1a3e'"],
+[data-theme="light"] [style*="background: #1a1a3e"],
+[data-theme="light"] [style*="background:#0d0d1a"],
+[data-theme="light"] [style*="background: #0d0d1a"] {
+  background: var(--card) !important;
 }

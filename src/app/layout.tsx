@@ -26,7 +26,10 @@ const themeScript = `(function(){try{var t=localStorage.getItem('vikc-theme')||'
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${dmSans.variable}`} suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
+      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <meta name="theme-color" content="#f8f4ed" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#0d0d1a" media="(prefers-color-scheme: dark)" />
+      </head>
       <body suppressHydrationWarning style={{ margin: 0, padding: 0, background: 'var(--bg)', color: 'var(--text)' }}>
         <AuthProvider>
           <div style={{ width: '100%', height: '100dvh', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: 'var(--bg)' }}>

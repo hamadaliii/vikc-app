@@ -1,21 +1,21 @@
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 
-let _client: ReturnType<typeof createBrowserClient> | null = null
+let client: ReturnType<typeof createClient> | null = null
 
-export function getSupabaseClient() {
-  if (typeof window === 'undefined') return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-  if (!_client) {
-    _client = createBrowserClient(
+export function getSupabase() {
+  if (!client) {
+    client = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: false,
+          storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+        }
+      }
     )
   }
-  return _client
-}
-
-export function createClient() {
-  return getSupabaseClient()
+  return client
 }
