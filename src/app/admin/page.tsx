@@ -374,16 +374,6 @@ export default function AdminPage() {
         <button onClick={()=>window.location.href='/home'} style={{marginLeft:'auto',background:'#1c1c26',border:'1px solid #2a2a3a',borderRadius:50,padding:'6px 14px',color:'#a0a0c0',fontSize:12,cursor:'pointer'}}>← User App</button>
       </div>
 
-      {/* Nav */}
-      <div style={{display:'flex',overflowX:'auto',gap:4,padding:'8px 12px',background:'var(--bg2)',borderBottom:'1px solid var(--border)',flexShrink:0,scrollbarWidth:'none'}}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={()=>setTab(t.id)} style={{display:'flex',alignItems:'center',gap:6,padding:'7px 14px',borderRadius:50,border:'none',cursor:'pointer',fontSize:12,fontWeight:600,whiteSpace:'nowrap',background:tab===t.id?'#6c63ff':'transparent',color:tab===t.id?'#fff':'#a0a0c0',flexShrink:0}}>
-            {t.icon} {t.label}
-            {t.id==='suspicious'&&stats?.pendingSuspicious>0&&<span style={{background:'#ff4f6a',borderRadius:50,padding:'1px 6px',fontSize:10}}>{stats.pendingSuspicious}</span>}
-          </button>
-        ))}
-      </div>
-
       {/* Content */}
       <div style={{flex:1,overflowY:'auto',scrollbarWidth:'none'}}>
 
@@ -703,6 +693,17 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+      </div>
+      {/* Bottom Nav */}
+      <div style={{display:'flex',overflowX:'auto',background:'var(--bg2)',borderTop:'1px solid var(--border)',flexShrink:0,height:68,scrollbarWidth:'none'}}>
+        {TABS.map(t => (
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:2,border:'none',cursor:'pointer',fontSize:9,fontWeight:600,whiteSpace:'nowrap',background:'transparent',color:tab===t.id?'var(--gold2)':'var(--text3)',flexShrink:0,position:'relative',minWidth:50}}>
+            <span style={{fontSize:18}}>{t.icon}</span>
+            <span>{t.label}</span>
+            {t.id==='suspicious'&&stats?.pendingSuspicious>0&&<span style={{position:'absolute',top:8,right:8,background:'#ff4f6a',borderRadius:50,padding:'1px 5px',fontSize:9}}>{stats.pendingSuspicious}</span>}
+            {tab===t.id&&<div style={{position:'absolute',bottom:6,width:20,height:2,borderRadius:50,background:'var(--gold2)'}}/>}
+          </button>
+        ))}
       </div>
     </div>
   )
