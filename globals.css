@@ -394,3 +394,7 @@ input:focus, select:focus, textarea:focus {
 [data-theme="light"] [style*="background: #0d0d1a"] {
   background: var(--card) !important;
 }
+
+body {
+  background: var(--bg) !important;
+}
