@@ -63,8 +63,7 @@ export default function AdminPage() {
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 2500) }
 
   useEffect(() => {
-    const t = localStorage.getItem('vikc-theme') || 'dark'
-    document.documentElement.setAttribute('data-theme', t)
+    document.documentElement.setAttribute('data-theme', 'dark')
     const supabase = getSupabase()
     const load = async () => {
     const supabase = getSupabase()

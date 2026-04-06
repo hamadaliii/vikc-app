@@ -256,3 +256,54 @@ input:focus, select:focus, textarea:focus {
 [data-theme="dark"] {
   color-scheme: dark;
 }
+
+/* ── Ljust tema: event-bannrar ── */
+[data-theme="light"] .ev-lecture,
+[data-theme="light"] .ev-circle,
+[data-theme="light"] .ev-workshop,
+[data-theme="light"] .ev-sports,
+[data-theme="light"] .ev-volunteer,
+[data-theme="light"] .ev-ramadan,
+[data-theme="light"] .ev-camp,
+[data-theme="light"] .ev-competition {
+  background: linear-gradient(135deg, #ede8df, #e0d8cc) !important;
+}
+
+/* Typ-pillret (t.ex. "Lecture") inuti bannern */
+[data-theme="light"] .ev-lecture > div:first-child,
+[data-theme="light"] .ev-circle > div:first-child,
+[data-theme="light"] .ev-workshop > div:first-child,
+[data-theme="light"] .ev-sports > div:first-child,
+[data-theme="light"] .ev-volunteer > div:first-child,
+[data-theme="light"] .ev-ramadan > div:first-child,
+[data-theme="light"] .ev-camp > div:first-child,
+[data-theme="light"] .ev-competition > div:first-child {
+  background: rgba(180, 130, 0, 0.18) !important;
+  color: #7a5a00 !important;
+}
+
+/* Poäng-pillret ("+100 pts") inuti bannern */
+[data-theme="light"] .ev-lecture > div:last-child,
+[data-theme="light"] .ev-circle > div:last-child,
+[data-theme="light"] .ev-workshop > div:last-child,
+[data-theme="light"] .ev-sports > div:last-child,
+[data-theme="light"] .ev-volunteer > div:last-child,
+[data-theme="light"] .ev-ramadan > div:last-child,
+[data-theme="light"] .ev-camp > div:last-child,
+[data-theme="light"] .ev-competition > div:last-child {
+  background: rgba(180, 130, 0, 0.15) !important;
+  color: #7a5a00 !important;
+  border-color: rgba(180, 130, 0, 0.3) !important;
+}
+
+/* Litet event-ikon-fyrkant (admin/past events) */
+[data-theme="light"] .ev-lecture[style*="width: 46"],
+[data-theme="light"] .ev-circle[style*="width: 46"],
+[data-theme="light"] .ev-workshop[style*="width: 46"],
+[data-theme="light"] .ev-sports[style*="width: 46"],
+[data-theme="light"] .ev-volunteer[style*="width: 46"],
+[data-theme="light"] .ev-ramadan[style*="width: 46"],
+[data-theme="light"] .ev-camp[style*="width: 46"],
+[data-theme="light"] .ev-competition[style*="width: 46"] {
+  background: linear-gradient(135deg, #d4c8a8, #c8ba90) !important;
+}
