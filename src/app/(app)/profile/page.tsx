@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
-import { getSupabase, getSessionUser } from '@/lib/supabase/client'
+import { getSupabase, clearSession } from '@/lib/supabase/client'
 
 const LEVEL_NAMES: Record<number,string> = {1:'Newcomer',2:'Explorer',3:'Contributor',4:'Active Member',5:'Dedicated',6:'Achiever',7:'Leader',8:'Champion',10:'Elite',12:'Legend'}
 const getLevelName = (l: number) => { const keys = Object.keys(LEVEL_NAMES).map(Number).sort((a,b)=>b-a); return LEVEL_NAMES[keys.find(k=>l>=k)||1] }

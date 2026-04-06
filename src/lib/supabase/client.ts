@@ -48,9 +48,25 @@ export function getSupabase() {
 }
 
 // Enkel session-hämtning - Supabase sköter allt via capacitorStorage
-export async function getSessionUser() {
-  const { data: { session } } = await getSupabase().auth.getSession()
-  return session?.user ?? null
+export async function getSessionUser(): Promise<any> {
+  const sb = getSupabase()
+
+  // Försök direkt
+  const { data: { session } } = await sb.auth.getSession()
+  if (session?.user) return session.user
+
+  // Vänta på att Supabase laddar sessionen från Capacitor Preferences
+  return new Promise((resolve) => {
+    const { data: { subscription } } = sb.auth.onAuthStateChange((_event: any, session: any) => {
+      subscription.unsubscribe()
+      resolve(session?.user ?? null)
+    })
+    // Timeout efter 5 sekunder — skicka null om inget händer
+    setTimeout(() => {
+      subscription.unsubscribe()
+      resolve(null)
+    }, 5000)
+  })
 }
 
 // Logga ut och rensa all lagring
