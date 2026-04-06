@@ -1,30 +1,36 @@
 import { createClient } from '@supabase/supabase-js'
-import { Preferences } from '@capacitor/preferences'
 
-const capacitorStorage = {
-  getItem: async (key: string) => {
+// Single Supabase client shared across entire app.
+// Capacitor Preferences is used for persistent storage on iOS/Android.
+// localStorage is used as fallback for web.
+
+const makeStorage = () => ({
+  getItem: async (key: string): Promise<string | null> => {
     try {
+      const { Preferences } = await import('@capacitor/preferences')
       const { value } = await Preferences.get({ key })
-      return value
-    } catch {
-      return localStorage.getItem(key)
-    }
+      if (value !== null) return value
+    } catch {}
+    return localStorage.getItem(key)
   },
-  setItem: async (key: string, value: string) => {
+  setItem: async (key: string, value: string): Promise<void> => {
     try {
+      const { Preferences } = await import('@capacitor/preferences')
       await Preferences.set({ key, value })
     } catch {}
     localStorage.setItem(key, value)
   },
-  removeItem: async (key: string) => {
+  removeItem: async (key: string): Promise<void> => {
     try {
+      const { Preferences } = await import('@capacitor/preferences')
       await Preferences.remove({ key })
     } catch {}
     localStorage.removeItem(key)
   },
-}
+})
 
 let _sb: any = null
+
 export function getSupabase() {
   if (!_sb) {
     _sb = createClient(
@@ -35,7 +41,7 @@ export function getSupabase() {
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: false,
-          storage: capacitorStorage as any,
+          storage: makeStorage() as any,
         },
       }
     )
