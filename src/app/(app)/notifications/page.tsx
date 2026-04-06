@@ -25,7 +25,7 @@ export default function NotificationsPage() {
       const user = await getSessionUser()
       if (!user) { window.location.href = '/login'; return }
       setUserId(user.id)
-      const { data } = await supabase
+      const { data } = await getSupabase()
         .from('notifications')
         .select('*')
         .eq('user_id', user.id)

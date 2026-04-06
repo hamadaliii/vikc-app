@@ -13,18 +13,12 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const { data, error } = await getSupabase().auth.signInWithPassword({ email, password })
+    // Supabase sparar sessionen automatiskt via capacitorStorage
+    const { error } = await getSupabase().auth.signInWithPassword({ email, password })
     if (error) {
       setError(error.message)
       setLoading(false)
       return
-    }
-    if (data.session) {
-      try {
-        const { Preferences } = await import('@capacitor/preferences')
-        await Preferences.set({ key: 'sb-access', value: data.session.access_token })
-        await Preferences.set({ key: 'sb-refresh', value: data.session.refresh_token })
-      } catch {}
     }
     window.location.href = '/home'
   }

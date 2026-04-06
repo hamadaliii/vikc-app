@@ -1,17 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { getSupabase, getSessionUser } from '@/lib/supabase/client'
 import Link from 'next/link'
-
-let _sb: any = null
-function getSupabase() {
-  if (!_sb) _sb = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }}
-  )
-  return _sb
-}
 
 const EVENT_EMOJIS: Record<string, string> = {
   lecture:'📚', circle:'🌙', workshop:'🛠️', sports:'⚽',
@@ -36,23 +26,11 @@ export default function EventsPage() {
   const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
-    const supabase = getSupabase()
     const load = async () => {
-    const supabase = getSupabase()
-    let token = localStorage.getItem('sb-token')
-    let refresh = localStorage.getItem('sb-refresh')
-    try {
-      const { Preferences } = await import('@capacitor/preferences')
-      const { value: t } = await Preferences.get({ key: 'sb-token' })
-      const { value: r } = await Preferences.get({ key: 'sb-refresh' })
-      if (t) token = t
-      if (r) refresh = r
-    } catch {}
-    if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = await getSessionUser()
       if (!user) { window.location.href = '/login'; return }
       setUserId(user.id)
-      const { data } = await supabase
+      const { data } = await getSupabase()
         .from('events')
         .select('*, event_registrations(user_id)')
         .neq('status', 'draft')

@@ -26,7 +26,7 @@ export default function EventDetailPage() {
       const user = await getSessionUser()
       if (!user) { window.location.href = '/login'; return }
       setUserId(user.id)
-      const { data } = await supabase
+      const { data } = await getSupabase()
         .from('events')
         .select('*, event_registrations(user_id), attendance(status,user_id,points_awarded,checkin_at,checkout_at)')
         .eq('id', id)
