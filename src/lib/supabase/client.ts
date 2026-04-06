@@ -13,19 +13,15 @@ const capacitorStorage = {
   setItem: async (key: string, value: string) => {
     try {
       await Preferences.set({ key, value })
-      localStorage.setItem(key, value)
-    } catch {
-      localStorage.setItem(key, value)
-    }
+    } catch {}
+    localStorage.setItem(key, value)
   },
   removeItem: async (key: string) => {
     try {
       await Preferences.remove({ key })
-      localStorage.removeItem(key)
-    } catch {
-      localStorage.removeItem(key)
-    }
-  }
+    } catch {}
+    localStorage.removeItem(key)
+  },
 }
 
 let _sb: any = null
@@ -40,7 +36,7 @@ export function getSupabase() {
           persistSession: true,
           detectSessionInUrl: false,
           storage: capacitorStorage as any,
-        }
+        },
       }
     )
   }

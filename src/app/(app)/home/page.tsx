@@ -67,7 +67,7 @@ export default function HomePage() {
   return (
     <div className="scrollable" style={{flex:1,background:'var(--bg)',color:'var(--text)'}}>
       {/* Header */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'20px 20px 12px'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px 12px'}}>
         <div>
           <div style={{fontSize:13,color:'var(--text2)'}}> Alsalam Alykom 👋</div>
           <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:22,fontWeight:800}}>{profile.full_name?.split(' ')[0]||profile.username}</div>
