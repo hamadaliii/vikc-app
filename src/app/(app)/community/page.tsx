@@ -1,18 +1,16 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { getSupabase } from '@/lib/supabase/client'
-import { useLang } from '@/lib/i18n'
+import { getSupabase, getSessionUser } from '@/lib/supabase/client'
+
 
 export default function CommunityPage() {
-  const { t } = useLang()
   const [users, setUsers] = useState<any[]>([])
   const [me, setMe] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const load = async () => {
-      const { data: { session } } = await getSupabase().auth.getSession()
-      const user = session?.user
+      const user = await getSessionUser()
       if (!user) { window.location.href = '/login'; return }
       const { data } = await getSupabase().from('profiles').select('*').order('points', { ascending: false }).limit(20)
       if (data) { setUsers(data); setMe(data.find((u: any) => u.id === user.id)) }
@@ -25,15 +23,15 @@ export default function CommunityPage() {
 
   if (loading) return (
     <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)'}}>
-      <div style={{width:36,height:36,border:'3px solid var(--border)',borderTopColor:'var(--gold)',borderRadius:'50%',animation:'spin 0.8s linear infinite'}}/>
+      <div style={{width:36,height:36,border:'3px solid var(--border)',borderTopColor:'var(--accent)',borderRadius:'50%',animation:'spin 0.8s linear infinite'}}/>
     </div>
   )
 
   return (
     <div className="scrollable" style={{flex:1,background:'var(--bg)',color:'var(--text)'}}>
       <div style={{padding:'20px 20px 12px'}}>
-        <h1 style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:22,fontWeight:800}}>{t('leaderboard')}</h1>
-        <p style={{fontSize:13,color:'var(--text2)',marginTop:2}}>{t('leaderboardSub')}</p>
+        <h1 style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:22,fontWeight:800}}>Leaderboard</h1>
+        <p style={{fontSize:13,color:'var(--text2)',marginTop:2}}>Top members this month</p>
       </div>
 
       {users.length >= 3 && (
@@ -73,11 +71,11 @@ export default function CommunityPage() {
 
       {myRank && me && (
         <div style={{padding:16}}>
-          <div style={{borderRadius:16,padding:14,display:'flex',alignItems:'center',gap:12,background:'rgba(200,150,0,0.08)',border:'1px solid rgba(200,150,0,0.25)'}}>
+          <div style={{borderRadius:16,padding:14,display:'flex',alignItems:'center',gap:12,background:'rgba(108,99,255,0.08)',border:'1px solid rgba(108,99,255,0.25)'}}>
             <div style={{fontSize:22}}>{me.avatar_emoji||'🧑'}</div>
             <div style={{flex:1}}>
-              <div style={{fontWeight:600,fontSize:14,color:'var(--text)'}}>{t('yourRanking')}</div>
-              <div style={{fontSize:12,color:'var(--text2)'}}>#{myRank}</div>
+              <div style={{fontWeight:600,fontSize:14,color:'var(--text)'}}>Your Ranking</div>
+              <div style={{fontSize:12,color:'var(--text2)'}}>Rank #{myRank}</div>
             </div>
             <div style={{fontFamily:'var(--font-syne,sans-serif)',fontWeight:800,fontSize:20,color:'var(--gold2)'}}>{me.points?.toLocaleString()}</div>
           </div>

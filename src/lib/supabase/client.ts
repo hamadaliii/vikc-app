@@ -1,33 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
-import { Preferences } from '@capacitor/preferences'
 
-const capacitorStorage = {
-  getItem: async (key: string) => {
-    try {
-      const { value } = await Preferences.get({ key })
-      return value
-    } catch {
-      return localStorage.getItem(key)
-    }
-  },
-  setItem: async (key: string, value: string) => {
-    try {
-      await Preferences.set({ key, value })
-    } catch {}
-    localStorage.setItem(key, value)
-  },
-  removeItem: async (key: string) => {
-    try {
-      await Preferences.remove({ key })
-    } catch {}
-    localStorage.removeItem(key)
-  },
-}
+const g = globalThis as any
 
-let _sb: any = null
 export function getSupabase() {
-  if (!_sb) {
-    _sb = createClient(
+  if (!g.__vikc_sb) {
+    g.__vikc_sb = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
@@ -35,10 +12,45 @@ export function getSupabase() {
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: false,
-          storage: capacitorStorage as any,
+          storage: typeof window !== 'undefined' ? window.localStorage : undefined as any,
         },
       }
     )
+    // Save session to Capacitor on every auth change (for mobile persistence)
+    if (typeof window !== 'undefined') {
+      g.__vikc_sb.auth.onAuthStateChange(async (_: string, session: any) => {
+        try {
+          const { Preferences } = await import('@capacitor/preferences')
+          if (session) {
+            await Preferences.set({ key: 'sb-access', value: session.access_token })
+            await Preferences.set({ key: 'sb-refresh', value: session.refresh_token })
+          } else {
+            await Preferences.remove({ key: 'sb-access' })
+            await Preferences.remove({ key: 'sb-refresh' })
+          }
+        } catch {}
+      })
+    }
   }
-  return _sb
+  return g.__vikc_sb
+}
+
+// Use this everywhere instead of getSession()
+export async function getSessionUser() {
+  // Try to restore from Capacitor first (for mobile)
+  try {
+    const { Preferences } = await import('@capacitor/preferences')
+    const { value: access } = await Preferences.get({ key: 'sb-access' })
+    const { value: refresh } = await Preferences.get({ key: 'sb-refresh' })
+    if (access && refresh) {
+      const { data } = await getSupabase().auth.setSession({
+        access_token: access,
+        refresh_token: refresh,
+      })
+      if (data.session?.user) return data.session.user
+    }
+  } catch {}
+  // Fall back to normal getSession (works on web with localStorage)
+  const { data: { session } } = await getSupabase().auth.getSession()
+  return session?.user ?? null
 }
