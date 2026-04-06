@@ -16,28 +16,31 @@ export function getSupabase() {
         },
       }
     )
-    // Save session to Capacitor on every auth change (for mobile persistence)
-    if (typeof window !== 'undefined') {
-      g.__vikc_sb.auth.onAuthStateChange(async (_: string, session: any) => {
-        try {
-          const { Preferences } = await import('@capacitor/preferences')
-          if (session) {
-            await Preferences.set({ key: 'sb-access', value: session.access_token })
-            await Preferences.set({ key: 'sb-refresh', value: session.refresh_token })
-          } else {
-            await Preferences.remove({ key: 'sb-access' })
-            await Preferences.remove({ key: 'sb-refresh' })
-          }
-        } catch {}
-      })
-    }
   }
   return g.__vikc_sb
 }
 
-// Use this everywhere instead of getSession()
+// Anropas explicit efter lyckad inloggning
+export async function saveSession(session: any) {
+  try {
+    const { Preferences } = await import('@capacitor/preferences')
+    await Preferences.set({ key: 'sb-access', value: session.access_token })
+    await Preferences.set({ key: 'sb-refresh', value: session.refresh_token })
+  } catch {}
+}
+
+// Anropas explicit vid utloggning
+export async function clearSession() {
+  try {
+    const { Preferences } = await import('@capacitor/preferences')
+    await Preferences.remove({ key: 'sb-access' })
+    await Preferences.remove({ key: 'sb-refresh' })
+  } catch {}
+  await getSupabase().auth.signOut()
+}
+
+// Används på varje sida istället för getSession()
 export async function getSessionUser() {
-  // Try to restore from Capacitor first (for mobile)
   try {
     const { Preferences } = await import('@capacitor/preferences')
     const { value: access } = await Preferences.get({ key: 'sb-access' })
@@ -47,10 +50,13 @@ export async function getSessionUser() {
         access_token: access,
         refresh_token: refresh,
       })
-      if (data.session?.user) return data.session.user
+      if (data.session?.user) {
+        // Spara uppdaterade tokens (kan ha refreshats)
+        await saveSession(data.session)
+        return data.session.user
+      }
     }
   } catch {}
-  // Fall back to normal getSession (works on web with localStorage)
   const { data: { session } } = await getSupabase().auth.getSession()
   return session?.user ?? null
 }

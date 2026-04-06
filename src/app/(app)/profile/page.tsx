@@ -126,7 +126,7 @@ export default function ProfilePage() {
   }
 
   const signOut = async () => {
-    await getSupabase().auth.signOut()
+    await clearSession()
     window.location.href = '/login'
   }
 

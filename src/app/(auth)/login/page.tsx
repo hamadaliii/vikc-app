@@ -19,6 +19,7 @@ export default function LoginPage() {
       setLoading(false)
       return
     }
+    await saveSession(data.session) 
     window.location.href = '/home'
   }
 
