@@ -20,6 +20,9 @@ export default function HomePage() {
 
   useEffect(() => {
     const load = async () => {
+        const { Preferences } = await import('@capacitor/preferences')
+        const { keys } = await Preferences.keys()
+        console.log('CAPACITOR KEYS:', JSON.stringify(keys))
       const user = await getSessionUser()
       if (!user) { window.location.href = '/login'; return }
       const [{ data: p }, { data: ev }, { count }] = await Promise.all([
