@@ -2,15 +2,7 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false } }
-  )
-}
+import { getSupabase } from '@/lib/supabase/client'
 
 function AdminButton() {
   const [isAdmin, setIsAdmin] = useState(false)

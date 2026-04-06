@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body suppressHydrationWarning style={{ margin: 0, padding: 0, background: 'var(--bg)', color: 'var(--text)' }}>
         <AuthProvider>
-          <div style={{ width: '100%', height: '100dvh', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: 'var(--bg)' }}>
+          <div style={{ width: '100%', height: '100dvh', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: 'var(--bg)', paddingTop: 'env(safe-area-inset-top)' }}>
             {children}
           </div>
           <Toaster position="bottom-center" toastOptions={{ style: { background: 'var(--card)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: '50px', fontSize: '13px', fontWeight: '500', padding: '10px 20px', maxWidth: '90vw' }, success: { iconTheme: { primary: '#22d47a', secondary: '#0d0d1a' } }, error: { iconTheme: { primary: '#ff4f6a', secondary: '#0d0d1a' } } }} />

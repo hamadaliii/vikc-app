@@ -367,7 +367,8 @@ input:focus, select:focus, textarea:focus {
 [data-theme="light"] .ev-ramadan,
 [data-theme="light"] .ev-camp,
 [data-theme="light"] .ev-competition {
-  background: linear-gradient(135deg, #c8960a, #e8b020) !important;
+  background: linear-gradient(135deg, #f0ebe0, #e8e1d4) !important;
+  border-bottom: 1px solid #d8d0c0 !important;
 }
 
 [data-theme="light"] .chip-accent,
@@ -376,27 +377,6 @@ input:focus, select:focus, textarea:focus {
   color: var(--gold3) !important;
 }
 
-[data-theme="light"] .ev-lecture,
-[data-theme="light"] .ev-circle,
-[data-theme="light"] .ev-workshop,
-[data-theme="light"] .ev-sports,
-[data-theme="light"] .ev-volunteer,
-[data-theme="light"] .ev-ramadan,
-[data-theme="light"] .ev-camp,
-[data-theme="light"] .ev-competition {
-  background: linear-gradient(135deg, #b8860b, #d4a017) !important;
-}
-
-[data-theme="light"] .ev-lecture,
-[data-theme="light"] .ev-circle,
-[data-theme="light"] .ev-workshop,
-[data-theme="light"] .ev-sports,
-[data-theme="light"] .ev-volunteer,
-[data-theme="light"] .ev-ramadan,
-[data-theme="light"] .ev-camp,
-[data-theme="light"] .ev-competition {
-  background: linear-gradient(135deg, #c8960a, #e8b020) !important;
-}
 
 [data-theme="light"] [style*="background:'#1a1a3e'"],
 [data-theme="light"] [style*="background: #1a1a3e"],
