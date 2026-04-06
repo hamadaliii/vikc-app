@@ -51,21 +51,21 @@ export function getSupabase() {
 export async function getSessionUser(): Promise<any> {
   const sb = getSupabase()
 
-  // Försök direkt
-  const { data: { session } } = await sb.auth.getSession()
-  if (session?.user) return session.user
-
-  // Vänta på att Supabase laddar sessionen från Capacitor Preferences
   return new Promise((resolve) => {
-    const { data: { subscription } } = sb.auth.onAuthStateChange((_event: any, session: any) => {
-      subscription.unsubscribe()
-      resolve(session?.user ?? null)
+    const { data: { subscription } } = sb.auth.onAuthStateChange((event: any, session: any) => {
+      // INITIAL_SESSION = Supabase klar med att läsa från Capacitor Preferences
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        subscription.unsubscribe()
+        resolve(session?.user ?? null)
+      }
     })
-    // Timeout efter 5 sekunder — skicka null om inget händer
+    // Timeout 8 sekunder om inget händer
     setTimeout(() => {
       subscription.unsubscribe()
-      resolve(null)
-    }, 5000)
+      sb.auth.getSession().then(({ data: { session } }: any) => {
+        resolve(session?.user ?? null)
+      })
+    }, 8000)
   })
 }
 
