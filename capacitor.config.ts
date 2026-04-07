@@ -16,7 +16,6 @@ const config: CapacitorConfig = {
     limitsNavigationsToAppBoundDomains: true,
     allowsLinkPreview: false,
     scrollEnabled: false,
-    webContentsDebuggingEnabled: false,
   }
 };
 

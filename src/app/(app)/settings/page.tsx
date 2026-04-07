@@ -1,8 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getSupabase, getSessionUser } from '@/lib/supabase/client'
-
+import { getSupabase } from '@/lib/supabase/client'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -19,10 +18,22 @@ export default function SettingsPage() {
     const saved = localStorage.getItem('vikc-theme') || 'dark'
     setTheme(saved as 'dark'|'light')
     document.documentElement.setAttribute('data-theme', saved)
+    const supabase = getSupabase()
     const load = async () => {
-      const user = await getSessionUser()
+    const supabase = getSupabase()
+    let token = localStorage.getItem('sb-token')
+    let refresh = localStorage.getItem('sb-refresh')
+    try {
+      const { Preferences } = await import('@capacitor/preferences')
+      const { value: t } = await Preferences.get({ key: 'sb-token' })
+      const { value: r } = await Preferences.get({ key: 'sb-refresh' })
+      if (t) token = t
+      if (r) refresh = r
+    } catch {}
+    if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
+      const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
-      const { data: p } = await getSupabase().from('profiles').select('*').eq('id', user.id).single()
+      const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single()
       if (p) { setProfile(p); setEditName(p.full_name||''); setEditBio(p.bio||'') }
     }
     load()
@@ -135,7 +146,19 @@ export default function SettingsPage() {
           <div style={{fontWeight:500,fontSize:14,color:'var(--text)'}}>VIKC App</div>
           <div style={{fontSize:12,color:'var(--text2)'}}>Version 1.0.0 · Youth Community Platform</div>
         </div>
-        <div onClick={()=>{localStorage.removeItem('sb-token');localStorage.removeItem('sb-refresh');localStorage.removeItem('sb-user');getSupabase().auth.signOut();window.location.href='/login'}}
+        <div onClick={async ()=>{
+                try {
+                  const { Preferences } = await import('@capacitor/preferences')
+                  await Preferences.remove({ key: 'sb-token' })
+                  await Preferences.remove({ key: 'sb-refresh' })
+                  await Preferences.remove({ key: 'sb-user' })
+                } catch {}
+                localStorage.removeItem('sb-token')
+                localStorage.removeItem('sb-refresh')
+                localStorage.removeItem('sb-user')
+                await getSupabase().auth.signOut()
+                window.location.href = '/login'
+              }}
           style={{display:'flex',alignItems:'center',gap:14,padding:'14px 16px',cursor:'pointer'}}>
           <div style={{width:38,height:38,borderRadius:10,background:'rgba(255,79,106,0.1)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18}}>🚪</div>
           <div style={{fontWeight:500,fontSize:14,color:'var(--red)'}}>Log Out</div>

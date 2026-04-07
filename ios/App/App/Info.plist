@@ -51,8 +51,6 @@
 	<string>VIKC needs your location to verify on-site attendance during check-in.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>VIKC uses your location to verify attendance for events.</string>
-	<key>WKWebsiteDataStoreType</key>
-	<string>persistent</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>VIKC may use your location for attendance verification.</string>
 </dict>

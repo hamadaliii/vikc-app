@@ -13,7 +13,6 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    // Supabase sparar sessionen automatiskt via capacitorStorage
     const { error } = await getSupabase().auth.signInWithPassword({ email, password })
     if (error) {
       setError(error.message)

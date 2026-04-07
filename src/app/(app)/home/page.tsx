@@ -1,8 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { getSupabase, getSessionUser } from '@/lib/supabase/client'
+import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 
+let _sb: any = null
+function getSupabase() {
+  if (!_sb) _sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }})
+  return _sb
+}
 
 const LEVEL_NAMES: Record<number,string> = {1:'Newcomer',2:'Explorer',3:'Contributor',4:'Active Member',5:'Dedicated',6:'Achiever',7:'Leader',8:'Champion',10:'Elite',12:'Legend'}
 const getLevelName = (l: number) => { const keys = Object.keys(LEVEL_NAMES).map(Number).sort((a,b)=>b-a); return LEVEL_NAMES[keys.find(k=>l>=k)||1] }
@@ -19,13 +24,25 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const supabase = getSupabase()
     const load = async () => {
-      const user = await getSessionUser()
+    const supabase = getSupabase()
+    let token = localStorage.getItem('sb-token')
+    let refresh = localStorage.getItem('sb-refresh')
+    try {
+      const { Preferences } = await import('@capacitor/preferences')
+      const { value: t } = await Preferences.get({ key: 'sb-token' })
+      const { value: r } = await Preferences.get({ key: 'sb-refresh' })
+      if (t) token = t
+      if (r) refresh = r
+    } catch {}
+    if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
+      const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
       const [{ data: p }, { data: ev }, { count }] = await Promise.all([
-        getSupabase().from('profiles').select('*').eq('id', user.id).single(),
-        getSupabase().from('events').select('*, event_registrations(user_id)').eq('status','upcoming').order('date').limit(4),
-        getSupabase().from('notifications').select('id',{count:'exact'}).eq('user_id',user.id).eq('is_read',false),
+        supabase.from('profiles').select('*').eq('id', user.id).single(),
+        supabase.from('events').select('*, event_registrations(user_id)').eq('status','upcoming').order('date').limit(4),
+        supabase.from('notifications').select('id',{count:'exact'}).eq('user_id',user.id).eq('is_read',false),
       ])
       if (p) setProfile(p)
       if (ev) setEvents(ev.map((e:any)=>({...e,is_registered:e.event_registrations?.some((r:any)=>r.user_id===user.id)})))
@@ -50,7 +67,7 @@ export default function HomePage() {
   return (
     <div className="scrollable" style={{flex:1,background:'var(--bg)',color:'var(--text)'}}>
       {/* Header */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'20px 20px 12px'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px 12px'}}>
         <div>
           <div style={{fontSize:13,color:'var(--text2)'}}> Alsalam Alykom 👋</div>
           <div style={{fontFamily:'var(--font-syne,sans-serif)',fontSize:22,fontWeight:800}}>{profile.full_name?.split(' ')[0]||profile.username}</div>

@@ -1,8 +1,17 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getSupabase, getSessionUser } from '@/lib/supabase/client'
+import { createClient } from '@supabase/supabase-js'
 
+let _sb: any = null
+function getSupabase() {
+  if (!_sb) _sb = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: window.localStorage }}
+  )
+  return _sb
+}
 
 // Default badge definitions if none in DB
 const DEFAULT_BADGES = [
@@ -34,15 +43,27 @@ export default function BadgesPage() {
   const [tab, setTab] = useState<'all' | 'earned' | 'locked'>('all')
 
   useEffect(() => {
+    const supabase = getSupabase()
     const load = async () => {
-      const user = await getSessionUser()
+    const supabase = getSupabase()
+    let token = localStorage.getItem('sb-token')
+    let refresh = localStorage.getItem('sb-refresh')
+    try {
+      const { Preferences } = await import('@capacitor/preferences')
+      const { value: t } = await Preferences.get({ key: 'sb-token' })
+      const { value: r } = await Preferences.get({ key: 'sb-refresh' })
+      if (t) token = t
+      if (r) refresh = r
+    } catch {}
+    if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
+      const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
 
       const [{ data: p }, { data: ub }, { data: dbB }, { data: att }] = await Promise.all([
-        getSupabase().from('profiles').select('*').eq('id', user.id).single(),
-        getSupabase().from('user_badges').select('badge_id, earned_at').eq('user_id', user.id),
-        getSupabase().from('badges').select('*').eq('is_active', true),
-        getSupabase().from('attendance').select('event:events(type)').eq('user_id', user.id).eq('status', 'verified'),
+        supabase.from('profiles').select('*').eq('id', user.id).single(),
+        supabase.from('user_badges').select('badge_id, earned_at').eq('user_id', user.id),
+        supabase.from('badges').select('*').eq('is_active', true),
+        supabase.from('attendance').select('event:events(type)').eq('user_id', user.id).eq('status', 'verified'),
       ])
 
       if (p) setProfile(p)
@@ -64,7 +85,7 @@ export default function BadgesPage() {
         })
         setAttendanceCounts(counts)
       }
-      await getSupabase().rpc('check_and_award_badges', { p_user_id: user.id })
+      await supabase.rpc('check_and_award_badges', { p_user_id: user.id })
       setLoading(false)
 
       setLoading(false)

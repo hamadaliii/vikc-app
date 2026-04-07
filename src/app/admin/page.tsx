@@ -1,8 +1,18 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { getSupabase, getSessionUser } from '@/lib/supabase/client'
+import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+
+let _sb: any = null
+function getSupabase() {
+  if (!_sb) _sb = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, storage: typeof window !== 'undefined' ? window.localStorage : undefined as any } }
+  )
+  return _sb
+}
 
 type AdminTab = 'dashboard'|'events'|'users'|'attendance'|'suspicious'|'announcements'|'rewards'
 
@@ -94,16 +104,27 @@ export default function AdminPage() {
     document.documentElement.setAttribute('data-theme', savedTheme)
 
     const load = async () => {
-      const user = await getSessionUser()
+      const supabase = getSupabase()
+      let token = localStorage.getItem('sb-token')
+      let refresh = localStorage.getItem('sb-refresh')
+      try {
+        const { Preferences } = await import('@capacitor/preferences')
+        const { value: t } = await Preferences.get({ key: 'sb-token' })
+        const { value: r } = await Preferences.get({ key: 'sb-refresh' })
+        if (t) token = t
+        if (r) refresh = r
+      } catch {}
+      if (token && refresh) await supabase.auth.setSession({ access_token: token, refresh_token: refresh })
+      const { data: { user } } = await supabase.auth.getUser()
       if (!user) { window.location.href = '/login'; return }
-      const { data: profile } = await getSupabase().from('profiles').select('role').eq('id', user.id).single()
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
       if (!profile || !['admin', 'superadmin', 'staff'].includes(profile.role)) { window.location.href = '/home'; return }
       const [{ data: ev }, { data: us }, { data: sus }, { data: att }, { data: rw }] = await Promise.all([
-        getSupabase().from('events').select('*').order('date', { ascending: false }).limit(30),
-        getSupabase().from('profiles').select('*').order('points', { ascending: false }).limit(50),
-        getSupabase().from('suspicious_attempts').select('*, user:profiles(full_name,username,avatar_emoji), event:events(title)').order('created_at', { ascending: false }).limit(30),
-        getSupabase().from('attendance').select('*, user:profiles(full_name,avatar_emoji), event:events(title,type)').order('created_at', { ascending: false }).limit(30),
-        getSupabase().from('rewards').select('*').eq('is_active', true).order('cost_points'),
+        supabase.from('events').select('*').order('date', { ascending: false }).limit(30),
+        supabase.from('profiles').select('*').order('points', { ascending: false }).limit(50),
+        supabase.from('suspicious_attempts').select('*, user:profiles(full_name,username,avatar_emoji), event:events(title)').order('created_at', { ascending: false }).limit(30),
+        supabase.from('attendance').select('*, user:profiles(full_name,avatar_emoji), event:events(title,type)').order('created_at', { ascending: false }).limit(30),
+        supabase.from('rewards').select('*').eq('is_active', true).order('cost_points'),
       ])
       if (ev) setEvents(ev)
       if (us) setUsers(us)

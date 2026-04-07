@@ -1,37 +1,33 @@
 import { createClient } from '@supabase/supabase-js'
+import { Preferences } from '@capacitor/preferences'
 
-const g = globalThis as any
-
-// Hybrid storage: Capacitor Preferences on mobile, localStorage on web
-// Supabase supports async storage natively - this is the correct approach
 const capacitorStorage = {
-  getItem: async (key: string): Promise<string | null> => {
+  getItem: async (key: string) => {
     try {
-      const { Preferences } = await import('@capacitor/preferences')
       const { value } = await Preferences.get({ key })
-      if (value !== null) return value
-    } catch {}
-    return typeof window !== 'undefined' ? window.localStorage.getItem(key) : null
+      return value
+    } catch {
+      return localStorage.getItem(key)
+    }
   },
-  setItem: async (key: string, value: string): Promise<void> => {
+  setItem: async (key: string, value: string) => {
     try {
-      const { Preferences } = await import('@capacitor/preferences')
       await Preferences.set({ key, value })
     } catch {}
-    if (typeof window !== 'undefined') window.localStorage.setItem(key, value)
+    localStorage.setItem(key, value)
   },
-  removeItem: async (key: string): Promise<void> => {
+  removeItem: async (key: string) => {
     try {
-      const { Preferences } = await import('@capacitor/preferences')
       await Preferences.remove({ key })
     } catch {}
-    if (typeof window !== 'undefined') window.localStorage.removeItem(key)
+    localStorage.removeItem(key)
   },
 }
 
+let _sb: any = null
 export function getSupabase() {
-  if (!g.__vikc_sb) {
-    g.__vikc_sb = createClient(
+  if (!_sb) {
+    _sb = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
@@ -44,29 +40,5 @@ export function getSupabase() {
       }
     )
   }
-  return g.__vikc_sb
-}
-
-// Enkel session-hämtning - Supabase sköter allt via capacitorStorage
-export async function getSessionUser(): Promise<any> {
-  const sb = getSupabase()
-  
-  // Ge Supabase 2 sekunder att läsa och refresha sessionen från Capacitor Preferences
-  await new Promise(resolve => setTimeout(resolve, 2000))
-  
-  const { data: { session } } = await sb.auth.getSession()
-  return session?.user ?? null
-}
-
-// Logga ut och rensa all lagring
-export async function clearSession() {
-  await getSupabase().auth.signOut()
-  // Rensa manuellt för säkerhets skull
-  try {
-    const { Preferences } = await import('@capacitor/preferences')
-    const { keys } = await Preferences.keys()
-    for (const key of keys.filter(k => k.startsWith('sb-'))) {
-      await Preferences.remove({ key })
-    }
-  } catch {}
+  return _sb
 }
